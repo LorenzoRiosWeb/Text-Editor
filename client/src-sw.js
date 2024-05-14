@@ -1,14 +1,15 @@
-const { precacheAndRoute } = require("workbox-precaching/precacheAndRoute");
-const { registerRoute } = require("workbox-routing");
-const { CacheFirst, StaleWhileRevalidate } = require("workbox-strategies");
-const { CacheableResponsePlugin } = require("workbox-cacheable-response");
-const { ExpirationPlugin } = require("workbox-expiration");
-const { warmStrategyCache } = require("workbox-recipes");
+import { precacheAndRoute } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { warmStrategyCache } from 'workbox-recipes';
 
+// Precache and route all assets defined in self.__WB_MANIFEST
 precacheAndRoute(self.__WB_MANIFEST);
 
 const pageCache = new CacheFirst({
-  cacheName: "page-cache",
+  cacheName: 'page-cache',
   plugins: [
     new CacheableResponsePlugin({
       statuses: [0, 200],
@@ -20,21 +21,23 @@ const pageCache = new CacheFirst({
 });
 
 warmStrategyCache({
-  urls: ["/index.html", "/"],
+  urls: ['/index.html', '/'],
   strategy: pageCache,
 });
 
 registerRoute(
-  ({ request }) => request.mode === "navigate",
-  ({ event }) => {
-    return pageCache.handle({ event });
-  }
+  // Match navigation requests
+  ({ request }) => request.mode === 'navigate',
+  // Use the pageCache strategy for navigation requests
+  ({ event }) => pageCache.handle({ event })
 );
 
 registerRoute(
-  ({ request }) => ["style", "script", "worker"].includes(request.destination),
+  // Match requests for styles, scripts, and workers
+  ({ request }) => ['style', 'script', 'worker'].includes(request.destination),
+  // Use StaleWhileRevalidate strategy for caching assets
   new StaleWhileRevalidate({
-    cacheName: "asset-cache",
+    cacheName: 'asset-cache',
     plugins: [
       new CacheableResponsePlugin({
         statuses: [0, 200],
