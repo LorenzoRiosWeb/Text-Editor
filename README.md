@@ -3,7 +3,7 @@
 ![JATE Logo](./client/src/images/logo.png)
 
 JATE (Just Another Text Editor) is a Progressive Web Application (PWA) that allows users to create and edit text content seamlessly, with or without an internet connection. Built using modern technologies including webpack, service workers, and IndexedDB, JATE offers a reliable and efficient text editing experience for developers.
-
+https://text-editor-84nk.onrender.com/
 ## Features
 
 - **Offline Editing**: Create and edit text content even when offline, with changes automatically synced when online.
